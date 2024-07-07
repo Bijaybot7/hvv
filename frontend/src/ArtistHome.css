@@ -1,0 +1,90 @@
+/* Body styling */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa; /* Light gray background */
+  color: #333; /* Dark text color */
+}
+
+/* Container styling */
+.middle {
+  max-width: 100%;
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-image: url('./images/oooo.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.icons{
+  margin-right: 250px;
+}
+
+
+
+.users{
+  max-width: 100px;
+}
+
+
+
+
+
+
+/* Vacancy container styling */
+.vacancy-container {
+  max-width: 50%;
+  background-color: #f5f5dc; /* Beige color */
+  padding: 20px; /* Padding inside the container */
+  border-radius: 10px; /* Rounded corners */
+  margin-bottom: 20px; /* Margin below the container */
+  width: 50%; /* Adjust the width as needed */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Vacancy details styling */
+.vacancy-details p {
+  margin-bottom: 10px; /* Margin below each detail */
+  color: #333; /* Dark text color */
+  font-size: 16px; /* Font size for the text */
+}
+
+/* Contact button styling */
+.contact-btn {
+  padding: 10px 20px; /* Padding inside the button */
+  background-color: #333; /* Dark background color */
+  color: white; /* White text color */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+/* Contact button hover effect */
+.contact-btn:hover {
+  background-color: #444; /* Darker background color on hover */
+}
+
+/* Join button styling */
+.join {
+  padding: 10px 20px;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background color */
+  color: white; /* White text color */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  margin-bottom: 10px; /* Add bottom margin if needed */
+  margin-left: 5px; /* Add left margin if needed */
+  
+}
+
+/* Join button hover effect */
+.join:hover {
+  background-color: rgba(0, 0, 0, 0.9); /* Darker semi-transparent background on hover */
+}

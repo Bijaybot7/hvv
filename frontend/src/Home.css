@@ -1,0 +1,335 @@
+/* General styling */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa; /* Light gray background */
+  color: #333; /* Dark text color */
+}
+
+/* Container styling */
+.middle {
+  max-width: 100%;
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-image: url('./images/oooo.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Feed container styling */
+
+
+/* Header styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Search bar styling */
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-right: -20px;
+}
+
+.search-icon {
+  margin-right: 10px;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  margin-right: 200px; /* Adjust margin-right to control the space between icons and search bar */
+  z-index: 1000;
+  margin-left: auto; /* This pushes the icons to the left */
+  margin-bottom: -74px;
+}
+
+
+
+.user-icon, .messenger-icon {
+  font-size: 24px;
+  margin-left: 0px;
+  color: #333;
+  cursor: pointer;
+  padding-right: -200px;
+
+}
+
+/* Post vacancy container styling */
+.post-vacancy-container {
+  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+  padding: 20px;
+  margin-left: 5px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: 50%; /* Adjust the width as needed, e.g., 50% for half the page width */
+}
+
+
+/* Button styles */
+.post-vacancy-btn, .cancel-btn, .post-btn, .toggle-posted-vacancy-btn {
+  padding: 10px 20px;
+  background-color: #333; /* Dark background color */
+  color: white; /* White text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-left: 5px;
+}
+
+.post-vacancy-btn:hover, .cancel-btn:hover, .post-btn:hover, .toggle-posted-vacancy-btn:hover {
+  background-color: #444; /* Darker background on hover */
+  
+}
+
+/* Form styling */
+.post-vacancy-form, .post-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input[type="text"], textarea {
+  width: 98%; /* Full width */
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: rgba(255, 255, 255, 0.7); /* Light gray background */
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+
+textarea {
+  resize: vertical;
+}
+
+input[type="file"] {
+  width: 100%; /* Full width */
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.7); /* Red text color */
+}
+
+
+/* Posted vacancy container styling */
+/* Posted vacancy container styling */
+.posted-vacancy-container {
+  display: flex; /* Add flexbox layout */
+  flex-wrap: wrap; /* Allow flex items to wrap to a new line if needed */
+  background-color: transparent; /* Semi-transparent white background */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px; /* Adjusted margin-bottom to 30px */
+  font-weight: bold;
+}
+
+/* Styling for individual vacancies */
+.posted-vacancy {
+  margin-right: 10px; /* Add right margin to separate each vacancy */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+
+.band-name {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333; /* Dark text color */
+}
+
+.position-location, .description {
+  margin-bottom: 5px;
+}
+
+.delete-posted-vacancy-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: red; /* Red text color */
+  cursor: pointer;
+}
+
+/* Posts container styling */
+.posts-container {
+  width: 1130px;
+  padding: 10px;
+  margin-left: 3px;
+  margin-top: 200px; /* Adjusted margin-top to 0px */
+  border-radius: 10px;
+  
+  background-color: rgba(128, 128, 128, 0.3); /* Semi-transparent gray background */
+}
+
+
+/* Post button in the posts container */
+.post-btn {
+  width: 70%;
+  padding: 10px 20px;
+  background-color: #333; /* Dark background color */
+  color: white; /* White text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  font-size: 16px; /* Font size */
+  text-transform: uppercase; /* Make text uppercase */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.post-btn:hover {
+  background-color: #444; /* Darker background on hover */
+  text-decoration: none; /* No underline on hover */
+}
+
+
+ 
+.post-heading {
+  margin-bottom: 20px;
+}
+
+.post-form {
+  margin-bottom: 20px;
+}
+
+.file-container {
+  max-width: 100%; /* Full width */
+  overflow: hidden;
+}
+
+.file-container img, video {
+  max-width: 50%; /* Full width */
+  height: auto;
+  border-radius: 5px;
+}
+
+/* Post and interactions styling */
+.post {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 20px;
+}
+
+.post-interactions {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.like-btn, .comment-btn, .delete-post-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+/* Default color for like, comment, and delete buttons */
+.like-btn {
+  color: #e74c3c; /* Red color for like */
+}
+
+.comment-btn {
+  color: #3498db; /* Blue color for comment */
+}
+
+
+
+/* Hover effect for like, comment, and delete buttons */
+.like-btn:hover {
+  color: #c0392b; /* Darker red on hover */
+}
+
+.comment-btn:hover {
+  color: #2980b9; /* Darker blue on hover */
+}
+
+
+
+/* Comments styling */
+.comments {
+  margin-top: 10px;
+}
+
+.comment {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: white; /* White background */
+}
+
+.delete-comment-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: red; /* Red color for delete buttons */
+  cursor: pointer;
+}
+
+/* Hover effect for delete comment button */
+.delete-comment-btn:hover {
+  text-decoration: underline;
+  color: #c0392b; /* Darker red on hover */
+}
+
+.delete-comment-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: red; /* Red color for delete buttons */
+  cursor: pointer;
+}
+
+.delete-post-btn {
+  float: right;
+}
+
+.delete-post-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: red; /* Red color for delete buttons */
+  cursor: pointer;
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.delete-post-btn:hover {
+  color: #c0392b; /* Darker red on hover */
+}
+
+/* Button styles */
+.lesson-btn {
+  padding: 10px 20px;
+  background-color: #333; /* Dark background color */
+  color: white; /* White text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  margin-right: 18px;
+  font-size: 13px; /* Font size */
+  text-transform: uppercase; /* Make text uppercase */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  text-decoration: none; /* No underline */
+}
+
+.lesson-btn:hover {
+  background-color: #444; /* Darker background on hover */
+  text-decoration: none; /* No underline on hover */
+}
+

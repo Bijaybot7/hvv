@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('./images/oooo.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white; /* Ensuring text color contrasts with the background */
+  }
+  
+  .about-us-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-image: url('./images/F__1_-removebg-preview.png');
+    background-size: 50%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+  }
+  
+  .about-us-content {
+    background-color: rgba(128, 128, 128, 0.5); /* Grey background with 50% opacity */
+    padding: 20px;
+    border-radius: 10px; /* Optional: Rounded corners */
+    color: black; /* Set content color to black */
+  }
+  
+  .about-us-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: black;
+  }
+  
+  .about-us-content p {
+    margin-bottom: 15px;
+  }
+  
