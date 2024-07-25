@@ -14,10 +14,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-  // app.useGlobalPipes(
-  //   new CustomValidationPipe(),
-  //   new ValidationPipe({ whitelist: true }),
-  // );
+
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.use('/uploads', express.static('uploads'));
 
