@@ -1,25 +1,27 @@
 const validateRegisterForm = (values) => {
-  const { name, email, password, category } = values; // Destructure values object
+  const { name, email, password, role } = values; // Destructure values object
   let errors = {};
 
   if (!name.trim()) {
-      errors.name = "Name is required";
+    errors.name = "Name is required";
   }
 
   if (!email.trim()) {
-      errors.email = "Email is required";
+    errors.email = "Email is required";
   } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = "Email address is invalid";
+    errors.email = "Email address is invalid";
   }
 
   if (!password.trim()) {
-      errors.password = "Password is required";
-  } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{9,})/.test(password)) {
-      errors.password = "Create a Strong Password";
+    errors.password = "Password is required";
+  } else if (
+    !/(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{9,})/.test(password)
+  ) {
+    errors.password = "Create a Strong Password";
   }
 
-  if (!category) {
-      errors.category = "Category is required";
+  if (!role) {
+    errors.role = "Category is required";
   }
 
   return errors;

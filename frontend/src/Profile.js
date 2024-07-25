@@ -1,34 +1,148 @@
-import React, { useState } from 'react';
-import './Profile.css';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./Profile.css";
+import { Link } from "react-router-dom";
 import {
   FiCamera,
   FiThumbsUp,
   FiMessageCircle,
   FiTrash2,
-  FiSearch
-} from 'react-icons/fi';
-import { RiHomeHeartFill } from 'react-icons/ri';
-import { MdMessage } from 'react-icons/md';
+  FiSearch,
+} from "react-icons/fi";
+import { FaRegUserCircle, FaSearch, FaTrash } from "react-icons/fa";
+
+import { RiHomeHeartFill } from "react-icons/ri";
+import { MdMessage } from "react-icons/md";
+
+// Define API URLs
+const API_URLS = {
+  UPLOAD_FILE: "http://localhost:3030/upload",
+  POST_VACANCY: "http://localhost:3030/vacancies",
+  GET_VACANCIES: "http://localhost:3030/vacancies/user/",
+  POST_POST: "http://localhost:3030/posts",
+  GET_POSTS: "http://localhost:3030/posts/user/",
+};
 
 const ProfilePage = () => {
-  const [name, setName] = useState('Your Band Name');
-  const [contactNumber, setContactNumber] = useState('');
-  const [emailAddress, setEmailAddress] = useState('');
-  const [genre, setGenre] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [genre, setGenre] = useState("");
+  const [band, setBand] = useState("");
+  const [description, setDescription] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [postDescription, setPostDescription] = useState('');
+  const [postDescription, setPostDescription] = useState("");
   const [postMedia, setPostMedia] = useState(null);
-  const [commentInput, setCommentInput] = useState('');
+  const [commentInput, setCommentInput] = useState("");
   const [commentingPostId, setCommentingPostId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [vacancyType, setVacancyType] = useState('');
-  const [vacancyExperience, setVacancyExperience] = useState('');
-  const [vacancyDescription, setVacancyDescription] = useState('');
-  const [vacancies, setVacancies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showVacancyForm, setShowVacancyForm] = useState(false);
+  const [vacancyBandName, setVacancyBandName] = useState("");
+  const [vacancyPosition, setVacancyPosition] = useState("");
+  const [vacancyLocation, setVacancyLocation] = useState("");
+  const [vacancyExperience, setVacancyExperience] = useState("");
+  const [vacancyDescription, setVacancyDescription] = useState("");
+  const [showPostedVacancies, setShowPostedVacancies] = useState(false);
+  const [postedVacancies, setPostedVacancies] = useState([]);
+
+  // Fetch user data and posts on mount
+  useEffect(() => {
+    const fetchUserDataAndPosts = async () => {
+      const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+      if (userId) {
+        try {
+          // Fetch user data
+          const userResponse = await axios.get(
+            `http://localhost:3030/users/${userId}`
+          );
+          const userData = userResponse.data;
+          setName(userData.name);
+          setContactNumber(userData.contact || "");
+          setEmailAddress(userData.email || "");
+          setGenre(userData.genre || "");
+          setDescription(userData.description || "");
+          setBand(userData.band || "");
+
+          // Fetch user's posts
+          const postsResponse = await axios.get(
+            `http://localhost:3030/posts/user/${userId}`
+          );
+          setPosts(postsResponse.data);
+        } catch (error) {
+          console.error("Error fetching user data or posts:", error);
+        }
+      }
+    };
+
+    fetchUserDataAndPosts();
+  }, []);
+  const fetchPostedVacancies = async () => {
+    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+    if (userId) {
+      try {
+        const response = await axios.get(`${API_URLS.GET_VACANCIES}${userId}`);
+        setPostedVacancies(response.data);
+      } catch (error) {
+        console.error("Error fetching posted vacancies:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchPostedVacancies();
+    // Existing fetchPosts() call here if you have it
+  }, []);
+  const handleVacancySubmit = async (e) => {
+    e.preventDefault();
+    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+
+    if (
+      vacancyBandName &&
+      vacancyPosition &&
+      vacancyLocation &&
+      vacancyExperience &&
+      vacancyDescription
+    ) {
+      try {
+        const response = await axios.post(API_URLS.POST_VACANCY, {
+          bandName: vacancyBandName,
+          position: vacancyPosition,
+          location: vacancyLocation,
+          experience: vacancyExperience,
+          description: vacancyDescription,
+          userId,
+        });
+
+        if (response.status === 201) {
+          await fetchPostedVacancies();
+          setVacancyBandName("");
+          setVacancyPosition("");
+          setVacancyLocation("");
+          setVacancyExperience("");
+          setVacancyDescription("");
+          setShowVacancyForm(false);
+        } else {
+          console.error("Failed to post vacancy:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error posting vacancy:", error);
+      }
+    } else {
+      alert("Please fill in all fields.");
+    }
+  };
+  const handleDeleteVacancy = async (id) => {
+    try {
+      await axios.delete(`${API_URLS.POST_VACANCY}/${id}`);
+      setPostedVacancies(
+        postedVacancies.filter((vacancy) => vacancy.id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting vacancy:", error);
+    }
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -39,101 +153,84 @@ const ProfilePage = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleSaveProfile = () => {
-    setIsEditing(false);
-  };
-
-  const handlePostSubmit = () => {
-    if (postDescription.trim() !== '' || postMedia !== null) {
-      const newPost = {
-        id: Math.random().toString(36).substr(2, 9),
-        description: postDescription,
-        media: postMedia ? URL.createObjectURL(postMedia) : null,
-        type: postMedia ? postMedia.type.split('/')[0] : null, // Add media type
-        likes: 0,
-        comments: []
-      };
-      setPosts([...posts, newPost]);
-      setPostDescription('');
-      setPostMedia(null);
+  const handleSaveProfile = async () => {
+    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+    if (userId) {
+      try {
+        await axios.put(`http://localhost:3030/users/details/${userId}`, {
+          contact: contactNumber,
+          genre: genre,
+          description: description,
+        });
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
     }
   };
 
-  const handleLike = (postId) => {
-    const updatedPosts = posts.map((post) => {
-      if (post.id === postId) {
-        return { ...post, likes: post.likes + 1 };
-      }
-      return post;
-    });
-    setPosts(updatedPosts);
-  };
+  const handlePostSubmit = async (e) => {
+    e.preventDefault();
+    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+    if (userId && (postDescription.trim() !== "" || postMedia !== null)) {
+      try {
+        let imagePath = "";
+        let videoPath = "";
 
-  const handleComment = (postId, comment) => {
-    const updatedPosts = posts.map((post) => {
-      if (post.id === postId) {
-        return { ...post, comments: [...post.comments, comment] };
-      }
-      return post;
-    });
-    setPosts(updatedPosts);
-  };
+        if (postMedia) {
+          const formData = new FormData();
+          formData.append("files", postMedia);
+          const uploadResponse = await axios.post(
+            API_URLS.UPLOAD_FILE,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
 
-  const handleCommentSubmit = (postId) => {
-    if (commentInput.trim() !== '') {
-      handleComment(postId, commentInput);
-      setCommentInput('');
-      setCommentingPostId(null);
+          const filePath = uploadResponse.data.paths[0];
+          if (postMedia.type.startsWith("image/")) {
+            imagePath = filePath;
+          } else if (postMedia.type.startsWith("video/")) {
+            videoPath = filePath;
+          }
+        }
+
+        const response = await axios.post(API_URLS.POST_POST, {
+          name: "Post",
+          description: postDescription,
+          userId,
+          image: imagePath,
+          video: videoPath,
+        });
+
+        if (response.status === 201) {
+          setPosts([{ ...response.data, type: "post" }, ...posts]);
+          setPostDescription("");
+          setPostMedia(null);
+        } else {
+          console.error("Failed to create post:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error creating post:", error);
+      }
     }
   };
 
-  const handleCommentButtonClick = (postId) => {
-    setCommentingPostId(postId);
-  };
-
-  const handleDeletePost = (postId) => {
-    const updatedPosts = posts.filter((post) => post.id !== postId);
-    setPosts(updatedPosts);
+  const handleDeletePost = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:3030/posts/${postId}`);
+      setPosts(posts.filter((post) => post._id !== postId));
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
   };
 
   const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
     setProfilePicture(file);
-  };
-
-  const handleVacancySubmit = () => {
-    if (vacancyType.trim() !== '' && vacancyDescription.trim() !== '') {
-      const newVacancy = {
-        id: Math.random().toString(36).substr(2, 9),
-        bandName: name,
-        type: vacancyType,
-        experience: vacancyExperience,
-        description: vacancyDescription
-      };
-      setVacancies([...vacancies, newVacancy]);
-      setVacancyType('');
-      setVacancyExperience('');
-      setVacancyDescription('');
-    }
-  };
-
-  const handleDeleteVacancy = (vacancyId) => {
-    const updatedVacancies = vacancies.filter(
-      (vacancy) => vacancy.id !== vacancyId
-    );
-    setVacancies(updatedVacancies);
-  };
-
-  const handleDeleteComment = (postId, commentIndex) => {
-    const updatedPosts = posts.map((post) => {
-      if (post.id === postId) {
-        const updatedComments = [...post.comments];
-        updatedComments.splice(commentIndex, 1);
-        return { ...post, comments: updatedComments };
-      }
-      return post;
-    });
-    setPosts(updatedPosts);
   };
 
   return (
@@ -142,20 +239,12 @@ const ProfilePage = () => {
         <div className="home-message-icons">
           <Link to="/home">
             <RiHomeHeartFill className="home-icon" />
-            </Link>
-            <Link to="/message-section">
-          <MdMessage className="message-icon" />
+          </Link>
+          <Link to="/message-section">
+            <MdMessage className="message-icon" />
           </Link>
         </div>
-        <div className="search-bar">
-          <FiSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+
         <div className="profile-container">
           <div className="profile-header">
             <div className="profile-picture-container">
@@ -166,26 +255,14 @@ const ProfilePage = () => {
                     alt="Profile"
                   />
                 ) : (
-                  <div className="default-profile-picture">
-                    <FiCamera className="camera-icon" />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleProfilePictureChange}
-                    />
-                  </div>
+                  <div className="default-profile-picture"></div>
                 )}
               </div>
             </div>
             <div className="edit-profile">
               {isEditing ? (
                 <div className="edit-profile-form">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Band Name"
-                  />
+                  <input type="text" value={name} disabled placeholder="Name" />
                   <input
                     type="text"
                     value={contactNumber}
@@ -195,15 +272,19 @@ const ProfilePage = () => {
                   <input
                     type="email"
                     value={emailAddress}
-                    onChange={(e) => setEmailAddress(e.target.value)}
+                    disabled
                     placeholder="Email Address"
                   />
-                  <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+                  <select
+                    value={genre}
+                    onChange={(e) => setGenre(e.target.value)}
+                  >
                     <option value="">Select Genre</option>
                     <option value="rock">Rock</option>
                     <option value="pop">Pop</option>
                     <option value="jazz">Jazz</option>
                     <option value="metal">Metal</option>
+                    <option value="indie">Indie</option>
                     <option value="hip-hop">Hip Hop</option>
                     <option value="others">Others</option>
                   </select>
@@ -212,19 +293,18 @@ const ProfilePage = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Description"
                   ></textarea>
-                  <label htmlFor="edit-profile-picture" className="edit-profile-picture-label">
-                    <FiCamera />
-                    <input
-                      id="edit-profile-picture"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleProfilePictureChange}
-                    />
-                  </label>
-                  <button className="save-button" onClick={handleSaveProfile}>Save</button>
+                  <label
+                    htmlFor="edit-profile-picture"
+                    className="edit-profile-picture-label"
+                  ></label>
+                  <button className="save-button" onClick={handleSaveProfile}>
+                    Save
+                  </button>
                 </div>
               ) : (
-                <button className="edit-button" onClick={handleEditProfile}>Edit Profile</button>
+                <button className="edit-button" onClick={handleEditProfile}>
+                  Edit Profile
+                </button>
               )}
             </div>
           </div>
@@ -236,121 +316,160 @@ const ProfilePage = () => {
             <p>Description: {description}</p>
           </div>
         </div>
+        <div className="vacancy-container">
+          {showVacancyForm ? (
+            <form className="vacancy-form" onSubmit={handleVacancySubmit}>
+              <div className="form-group">
+                <label htmlFor="vacancyBandName">Band Name</label>
+                <input
+                  type="text"
+                  id="vacancyBandName"
+                  value={vacancyBandName}
+                  onChange={(e) => setVacancyBandName(e.target.value)}
+                  placeholder="Enter band name"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="vacancyPosition">Position</label>
+                <input
+                  type="text"
+                  id="vacancyPosition"
+                  value={vacancyPosition}
+                  onChange={(e) => setVacancyPosition(e.target.value)}
+                  placeholder="Enter position"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="vacancyLocation">Location</label>
+                <input
+                  type="text"
+                  id="vacancyLocation"
+                  value={vacancyLocation}
+                  onChange={(e) => setVacancyLocation(e.target.value)}
+                  placeholder="Enter location"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="vacancyExperience">Experience</label>
+                <input
+                  type="text"
+                  id="vacancyExperience"
+                  value={vacancyExperience}
+                  onChange={(e) => setVacancyExperience(e.target.value)}
+                  placeholder="Enter experience"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="vacancyDescription">Description</label>
+                <textarea
+                  id="vacancyDescription"
+                  value={vacancyDescription}
+                  onChange={(e) => setVacancyDescription(e.target.value)}
+                  placeholder="Enter description"
+                />
+              </div>
+              <button type="submit">Post Vacancy</button>
+              <button type="button" onClick={() => setShowVacancyForm(false)}>
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <button onClick={() => setShowVacancyForm(true)}>
+              Post a Vacancy
+            </button>
+          )}
+
+          <button
+            className="toggle-posted-vacancies"
+            onClick={() => setShowPostedVacancies(!showPostedVacancies)}
+          >
+            {showPostedVacancies
+              ? "Hide Posted Vacancies"
+              : "Show Posted Vacancies"}
+          </button>
+
+          {showPostedVacancies && (
+            <div className="posted-vacancies">
+              {postedVacancies.length > 0 ? (
+                postedVacancies.map((vacancy) => (
+                  <div key={vacancy.id} className="vacancy-card">
+                    <div className="vacancy-header">
+                      <h3>{vacancy.bandName}</h3>
+                      <button
+                        className="delete-vacancy-btn"
+                        onClick={() => handleDeleteVacancy(vacancy._id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                    <p>
+                      <strong>Position:</strong> {vacancy.position}
+                    </p>
+                    <p>
+                      <strong>Location:</strong> {vacancy.location}
+                    </p>
+                    <p>
+                      <strong>Experience:</strong> {vacancy.experience}
+                    </p>
+                    <p>
+                      <strong>Description:</strong> {vacancy.description}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>No vacancies posted yet.</p>
+              )}
+            </div>
+          )}
+        </div>
         <div className="post-container">
           <h2>Create Post</h2>
-          <div className="post-input">
-            <textarea
-              placeholder="Write something..."
-              value={postDescription}
-              onChange={(e) => setPostDescription(e.target.value)}
-            />
-            <label htmlFor="file-upload" className="file-upload-label">
-              <FiCamera />
-              <input
-                id="file-upload"
-                type="file"
-                accept="image/*,video/*"
-                onChange={handleFileUpload}
+          <form onSubmit={handlePostSubmit}>
+            <div className="post-input">
+              <textarea
+                placeholder="Write something..."
+                value={postDescription}
+                onChange={(e) => setPostDescription(e.target.value)}
               />
-            </label>
-            {(postDescription.trim() !== '' || postMedia !== null) && <button onClick={handlePostSubmit}>Post</button>}
-          </div>
+              <label htmlFor="file-upload" className="file-upload-label">
+                <FiCamera />
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={handleFileUpload}
+                />
+              </label>
+              {(postDescription.trim() !== "" || postMedia !== null) && (
+                <button type="submit">Post</button>
+              )}
+            </div>
+          </form>
           <div className="post-feed">
             {posts.map((post, index) => (
               <div key={index} className="post">
-                {post.media && post.media.startsWith('blob:') ? (
-                  post.type === 'image' ? (
-                    <div className="image-wrapper">
-                      <img src={post.media} alt="Post" className="post-image" />
-                    </div>
-                  ) : (
-                    <div className="video-wrapper">
-                      <video controls className="post-video">
-                        <source src={post.media} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  )
-                ) : (
-                  <p>{post.description}</p>
-                )}
-                <div className="post-actions">
-                  <button onClick={() => handleLike(post.id)}>
-                    <FiThumbsUp />
-                    {post.likes} Likes
-                  </button>
-                  <button onClick={() => handleCommentButtonClick(post.id)}>
-                    <FiMessageCircle />
-                    {commentingPostId === post.id ? 'Cancel' : 'Comment'}
-                  </button>
-                </div>
-                {commentingPostId === post.id && (
-                  <div className="post-comments">
-                    <input
-                      type="text"
-                      placeholder="Write a comment..."
-                      value={commentInput}
-                      onChange={(e) => setCommentInput(e.target.value)}
-                    />
-                    <button onClick={() => handleCommentSubmit(post.id)}>Post</button>
+                {post.image && (
+                  <div className="image-wrapper">
+                    <img src={post.image} alt="Post" className="post-image" />
                   </div>
                 )}
-                <div className="post-comments">
-                  {post.comments.map((comment, commentIndex) => (
-                    <div key={commentIndex} className="comment">
-                      <p>{comment}</p>
-                      <div className="delete-comment" onClick={() => handleDeleteComment(post.id, commentIndex)}>
-                        <FiTrash2 />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="delete-post" onClick={() => handleDeletePost(post.id)}>
+                {post.video && (
+                  <div className="video-wrapper">
+                    <video controls className="post-video">
+                      <source src={post.video} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
+                <p>{post.description}</p>
+                <div
+                  className="delete-post"
+                  onClick={() => handleDeletePost(post._id)}
+                >
                   <FiTrash2 />
                 </div>
               </div>
             ))}
-          </div>
-          <div className="vacancy-container">
-            <h2>Post a Vacancy</h2>
-            <div className="vacancy-input">
-              <select value={vacancyType} onChange={(e) => setVacancyType(e.target.value)}>
-                <option value="">Select Vacancy Type</option>
-                <option value="drummer">Drummer</option>
-                <option value="guitarist">Guitarist</option>
-                <option value="vocalist">Vocalist</option>
-                <option value="pianist">Pianist</option>
-                {/* Add more options as needed */}
-              </select>
-              <input
-                type="text"
-                placeholder="Experience (if any)"
-                value={vacancyExperience}
-                onChange={(e) => setVacancyExperience(e.target.value)}
-              />
-              <textarea
-                placeholder="Description of the vacancy..."
-                value={vacancyDescription}
-                onChange={(e) => setVacancyDescription(e.target.value)}
-              />
-              {(vacancyType !== '' && vacancyDescription.trim() !== '') && (
-                <button onClick={handleVacancySubmit}>Post Vacancy</button>
-              )}
-            </div>
-            <div className="vacancy-list">
-              <h2>Posted Vacancies</h2>
-              {vacancies.map((vacancy, index) => (
-                <div key={index} className="vacancy">
-                  <p>Band: {vacancy.bandName}</p>
-                  <p>Type: {vacancy.type}</p>
-                  {vacancy.experience && <p>Experience Required: {vacancy.experience}</p>}
-                  <p>Description: {vacancy.description}</p>
-                  <div className="delete-vacancy" onClick={() => handleDeleteVacancy(vacancy.id)}>
-                    <FiTrash2 />
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>

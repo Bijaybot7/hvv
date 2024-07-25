@@ -20,6 +20,9 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
 }
+.post p {
+  color: black;
+}
 
 /* Feed container styling */
 
